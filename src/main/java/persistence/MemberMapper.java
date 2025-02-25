@@ -4,7 +4,9 @@ import entities.Member;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MemberMapper {
 
@@ -15,7 +17,6 @@ public class MemberMapper {
         }
 
         public int numOfMembers() throws SQLException {
-            List<Member> members = new ArrayList<>();
             String sql = "SELECT COUNT(*) FROM Member";
 
             try (Connection connection = database.connect()) {
@@ -32,6 +33,52 @@ public class MemberMapper {
             }
             return 0; // If there are no members
         }
+
+        public Map<String, Integer> teamMemberCount() throws SQLException {
+            String sql = "SELECT team.team_id, COUNT(registration.member_id) AS member_count " +
+                    "FROM registration " +
+                    "JOIN team ON registration.team_id = team.team_id " +
+                    "GROUP BY team.team_id " +
+                    "ORDER BY member_count DESC;";
+
+            Map<String, Integer> teamMemberCount = new HashMap<>();
+
+            try (Connection connection = database.connect();
+                 PreparedStatement ps = connection.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+
+
+                while (rs.next()) {
+                    String teamId = rs.getString("team_id");
+                    int count = rs.getInt("member_count");
+                    teamMemberCount.put(teamId, count);
+                }
+            }
+            return teamMemberCount;
+        }
+
+        public Map<String, Integer> sportMemberCount() throws SQLException {
+            String sql = "SELECT sport.sport, COUNT(registration.member_id) AS member_count " +
+                    "FROM registration " +
+                    "JOIN team ON registration.team_id = team.team_id " +
+                    "JOIN sport ON team.sport_id = sport.sport_id " +
+                    "GROUP BY sport.sport " +
+                    "ORDER BY member_count DESC;";
+
+            Map<String, Integer> sportMemberCount = new HashMap<>();
+
+            try (Connection connection = database.connect();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String sport = rs.getString("sport");
+                    int count = rs.getInt("member_count");
+                    sportMemberCount.put(sport, count);
+                }
+            }
+            return sportMemberCount;
+        }
+
 
         public List<Member> getAllMembers() {
 
