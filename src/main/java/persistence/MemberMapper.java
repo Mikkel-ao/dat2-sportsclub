@@ -34,12 +34,37 @@ public class MemberMapper {
             return 0; // If there are no members
         }
 
+        public int numOfMen() throws SQLException {
+            String sql = "SELECT COUNT(*) FROM Member WHERE gender = 'm'";
+            try (Connection connection = database.connect()) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            }
+            return 0; // If there are none
+        }
+
+        public int numOfWomen() throws SQLException {
+            String sql = "SELECT COUNT(*) FROM Member WHERE gender = 'k'";
+            try (Connection connection = database.connect()) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            }
+            return 0;
+        }
+
         public Map<String, Integer> teamMemberCount() throws SQLException {
             String sql = "SELECT team.team_id, COUNT(registration.member_id) AS member_count " +
                     "FROM registration " +
                     "JOIN team ON registration.team_id = team.team_id " +
-                    "GROUP BY team.team_id " +
-                    "ORDER BY member_count DESC;";
+                    "GROUP BY team.team_id ";
 
             Map<String, Integer> teamMemberCount = new HashMap<>();
 
@@ -62,8 +87,7 @@ public class MemberMapper {
                     "FROM registration " +
                     "JOIN team ON registration.team_id = team.team_id " +
                     "JOIN sport ON team.sport_id = sport.sport_id " +
-                    "GROUP BY sport.sport " +
-                    "ORDER BY member_count DESC;";
+                    "GROUP BY sport.sport ";
 
             Map<String, Integer> sportMemberCount = new HashMap<>();
 

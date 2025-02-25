@@ -21,10 +21,13 @@ public class Main {
         showMembers(members);
         showMemberById(memberMapper, 13);
 
-
+        // Assignment method calls:
         numOfMembers(memberMapper); // Presents total number of members
+        numOfMen(memberMapper); // Presents total number of male members
+        numOfWomen(memberMapper); // Presents total number of female members
         teamMemberCount(memberMapper); // Presents number of members for every team
         sportMemberCount(memberMapper); // Present number of members for every sport
+
 
 
         /*  
@@ -38,6 +41,18 @@ public class Main {
         int count = memberMapper.numOfMembers();
         System.out.println("***** Members Count *****");
         System.out.println("Total number of members: " + count);
+    }
+
+    private static void numOfMen(MemberMapper memberMapper) throws SQLException {
+        int count = memberMapper.numOfMen();
+        System.out.println("***** Male Members Count *****");
+        System.out.println("Total number of men: " + count);
+    }
+
+    private static void numOfWomen(MemberMapper memberMapper) throws SQLException {
+        int count = memberMapper.numOfWomen();
+        System.out.println("***** Female Members Count *****");
+        System.out.println("Total number of women: " + count);
     }
 
     private static void teamMemberCount(MemberMapper memberMapper) throws SQLException {
