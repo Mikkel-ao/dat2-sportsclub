@@ -14,6 +14,25 @@ public class MemberMapper {
             this.database = database;
         }
 
+        public int numOfMembers() throws SQLException {
+            List<Member> members = new ArrayList<>();
+            String sql = "SELECT COUNT(*) FROM Member";
+
+            try (Connection connection = database.connect()) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ResultSet rs = ps.executeQuery();
+
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return 0; // If there are no members
+        }
+
         public List<Member> getAllMembers() {
 
             List<Member> memberList = new ArrayList<>();
