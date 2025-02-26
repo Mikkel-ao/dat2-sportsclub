@@ -1,6 +1,10 @@
+package app;
+
 import entities.Member;
+import entities.Registration;
 import persistence.Database;
 import persistence.MemberMapper;
+import persistence.RegistrationMapper;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +20,9 @@ public class Main {
 
         Database db = new Database(USER, PASSWORD, URL);
         MemberMapper memberMapper = new MemberMapper(db);
+        RegistrationMapper registrationMapper = new RegistrationMapper(db);
         List<Member> members = memberMapper.getAllMembers();
+
 
         showMembers(members);
         showMemberById(memberMapper, 13);
@@ -28,8 +34,14 @@ public class Main {
         teamMemberCount(memberMapper); // Presents number of members for every team
         sportMemberCount(memberMapper); // Present number of members for every sport
         totalTeamIncome(memberMapper); // Presents total income for all teams
+        eachTeamIncome(memberMapper); // Present total income for each team
+        averageTeamPayment(memberMapper); // Present average payment for each team
 
+        // Task 14 - RegistrationMapper method
+        // registrationMapper.addToTeam(new Registration(13, "ten01", 175));
 
+        // In the method there's a for loop to print out the list.
+        getAllRegistrations(registrationMapper);  // Call the method here
 
 
         /*  
@@ -78,6 +90,34 @@ public class Main {
         System.out.println("***** Total Team Income *****");
         System.out.println("Total number of team income: " + total);
     }
+
+    private static void eachTeamIncome(MemberMapper memberMapper) throws SQLException {
+        System.out.println("***** Each Team Income *****");
+        Map<String, Integer> teamIncome = memberMapper.eachTeamIncome();
+        for (Map.Entry<String, Integer> entry : teamIncome.entrySet()) {
+            System.out.println("team_id: " + entry.getKey() + "   income: " + entry.getValue());
+        }
+    }
+
+    private static void averageTeamPayment(MemberMapper memberMapper) throws SQLException {
+        System.out.println("***** Average Team Payment *****");
+        Map<String, Integer> avgPayment = memberMapper.averageTeamPayment();
+        for (Map.Entry<String, Integer> entry : avgPayment.entrySet()) {
+            System.out.println("team_id: " + entry.getKey() + "   payment: " + entry.getValue());
+        }
+    }
+
+    private static void getAllRegistrations(RegistrationMapper registrationMapper) throws SQLException {
+        System.out.println("***** All Registrations *****");
+        List<Registration> registrations = registrationMapper.getAllRegistrations();
+
+        for (Registration registration : registrations) {
+            System.out.println("Member: " + registration.getMember_name() +
+                    ", Team: " + registration.getTeam_id() +
+                    ", Sport: " + registration.getSport());
+        }
+    }
+
 
     private static void deleteMember(int memberId, MemberMapper memberMapper) {
         if (memberMapper.deleteMember(memberId)){

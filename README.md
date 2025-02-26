@@ -20,7 +20,7 @@ datamappers for some of the other entities in the database.
 3) Open the project in IntelliJ
 4) Create the database 'sportsclub' in Postgres via pgAdmin
 5) Open the file "src/main/resources/sportsclub.sql" in pgAdmin and execute it to create the sportsclub tables and fill them with data.
-6) Update the login credentials in the Main class to reflect your local system
+6) Update the login credentials in the app.Main class to reflect your local system
 7) Run it and get to know the code.
 
 After completing the following tasks, you should test them from your main-method. 

@@ -60,9 +60,25 @@ public class MemberMapper {
             return 0;
         }
 
-        public Map<String, Integer> TeamIncome() throws SQLException {
-            String sql = " "
+        public Map<String, Integer> eachTeamIncome() throws SQLException {
+            String sql = "SELECT team_id, SUM(price) AS total_income FROM registration GROUP BY team_id ORDER BY total_income DESC";
+
+            Map<String, Integer> teamIncome;
+            try (Connection connection = database.connect()) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ResultSet rs = ps.executeQuery();
+                    teamIncome = new HashMap<>();
+
+                    while (rs.next()) {
+                        String teamId = rs.getString("team_id");
+                        int income = rs.getInt("total_income");
+                        teamIncome.put(teamId, income);
+                    }
+                }
+            }
+            return teamIncome;
         }
+
 
         public int totalTeamIncome() throws SQLException {
             String sql = "SELECT team_id, SUM(price) AS total_income FROM registration GROUP BY team_id ORDER BY total_income DESC";
@@ -71,19 +87,35 @@ public class MemberMapper {
                 try (PreparedStatement ps = connection.prepareStatement(sql)) {
                     ResultSet rs = ps.executeQuery();
 
-                    while (rs.next()) {  // Loop through all teams
-                        total += rs.getInt(2);  // Retrieve total_income (second column)
+                    while (rs.next()) {
+                        total += rs.getInt(2);
                     }
                 }
             }
             return total;
         }
 
+        public Map<String, Integer> averageTeamPayment() throws SQLException {
+            String sql = "SELECT team_id, AVG(price) AS average_payment FROM registration GROUP BY team_id";
+
+            Map<String, Integer> avgPayment = new HashMap<>();
+
+            try (Connection connection = database.connect()) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ResultSet rs = ps.executeQuery();
+
+                    while (rs.next()) {
+                        String teamId = rs.getString("team_id");
+                        int payment = rs.getInt("average_payment");
+                        avgPayment.put(teamId, payment);
+                    }
+                }
+            }
+            return avgPayment;
+        }
+
         public Map<String, Integer> teamMemberCount() throws SQLException {
-            String sql = "SELECT team.team_id, COUNT(registration.member_id) AS member_count " +
-                    "FROM registration " +
-                    "JOIN team ON registration.team_id = team.team_id " +
-                    "GROUP BY team.team_id ";
+            String sql = "SELECT team.team_id, COUNT(registration.member_id) AS member_count FROM registration JOIN team ON registration.team_id = team.team_id GROUP BY team.team_id";
 
             Map<String, Integer> teamMemberCount = new HashMap<>();
 
