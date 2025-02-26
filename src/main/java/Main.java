@@ -27,6 +27,8 @@ public class Main {
         numOfWomen(memberMapper); // Presents total number of female members
         teamMemberCount(memberMapper); // Presents number of members for every team
         sportMemberCount(memberMapper); // Present number of members for every sport
+        totalTeamIncome(memberMapper); // Presents total income for all teams
+
 
 
 
@@ -69,6 +71,12 @@ public class Main {
         for (Map.Entry<String, Integer> entry : memberCountPerSport.entrySet()) {
             System.out.println("sport_id: " + entry.getKey() + "   Members: " + entry.getValue());
         }
+    }
+
+    private static void totalTeamIncome(MemberMapper memberMapper) throws SQLException {
+        int total = memberMapper.totalTeamIncome();
+        System.out.println("***** Total Team Income *****");
+        System.out.println("Total number of team income: " + total);
     }
 
     private static void deleteMember(int memberId, MemberMapper memberMapper) {

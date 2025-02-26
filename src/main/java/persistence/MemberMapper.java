@@ -60,6 +60,25 @@ public class MemberMapper {
             return 0;
         }
 
+        public Map<String, Integer> TeamIncome() throws SQLException {
+            String sql = " "
+        }
+
+        public int totalTeamIncome() throws SQLException {
+            String sql = "SELECT team_id, SUM(price) AS total_income FROM registration GROUP BY team_id ORDER BY total_income DESC";
+            int total = 0;
+            try (Connection connection = database.connect()) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                    ResultSet rs = ps.executeQuery();
+
+                    while (rs.next()) {  // Loop through all teams
+                        total += rs.getInt(2);  // Retrieve total_income (second column)
+                    }
+                }
+            }
+            return total;
+        }
+
         public Map<String, Integer> teamMemberCount() throws SQLException {
             String sql = "SELECT team.team_id, COUNT(registration.member_id) AS member_count " +
                     "FROM registration " +
